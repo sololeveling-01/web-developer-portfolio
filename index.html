@@ -85,11 +85,23 @@
     <section id="contact" class="container">
         <h2>Get In Touch</h2>
         <form id="contact-form">
-            <input type="text" placeholder="Your Name" required>
-            <input type="email" placeholder="Your Email" required>
-            <textarea placeholder="Message" rows="5" required></textarea>
+            <input type="text" id="name" placeholder="Your Name" required>
+            <input type="email" id="email" placeholder="Your Email" required>
+            <textarea id="message" placeholder="Message" rows="5" required></textarea>
             <button type="submit" class="btn">Send Message</button>
         </form>
+
+        <!-- Backend Demo Section -->
+        <div id="backend-demo"
+            style="margin-top: 50px; text-align: left; background: #eef; padding: 20px; border-radius: 10px; display: none;">
+            <h3>🔌 Backend Database Simulation</h3>
+            <p><em>This section demonstrates how a backend stores form submissions. Messages appear here instantly.</em>
+            </p>
+            <ul id="messages-list" style="list-style: none; padding: 0;">
+                <!-- Messages will be injected here by JS -->
+            </ul>
+            <button id="clear-db" class="btn-sm" style="background: red; margin-top: 10px;">Clear Database</button>
+        </div>
     </section>
 
     <footer>
