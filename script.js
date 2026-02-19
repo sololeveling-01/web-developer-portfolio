@@ -1,5 +1,7 @@
 
 // Basic Interaction & Enhanced Backend Simulation
+console.log('Script loaded! If you see this, JS is working.');
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- Smooth Scrolling ---
@@ -19,21 +21,25 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Backend Simulation Logic ---
-    const form = document.getElementById('contact-form');
+    const form = document.querySelector('form'); // Changed selector to be more robust
     const backendDemo = document.getElementById('backend-demo');
     const messagesList = document.getElementById('messages-list');
     const clearBtn = document.getElementById('clear-db');
 
-    // Load existing messages from "Database" (LocalStorage)
+    // Helper: Load existing messages from "Database" (LocalStorage)
     function loadMessages() {
-        const messages = JSON.parse(localStorage.getItem('portfolioMessages')) || [];
+        const stored = localStorage.getItem('portfolioMessages');
+        const messages = stored ? JSON.parse(stored) : [];
+
+        console.log('Loading messages:', messages); // Debug log
+
         if (messages.length > 0) {
             backendDemo.style.display = 'block';
             messagesList.innerHTML = messages.map(msg => `
-                <li style="background: #fff; padding: 10px; margin-bottom: 5px; border-radius: 5px; border-left: 4px solid #fca311;">
-                    <strong>${msg.name}</strong> (${msg.email}): <br>
-                    <span style="color: #555;">${msg.message}</span> <br>
-                    <small style="color: #aaa;">Sent: ${msg.timestamp}</small>
+                <li style="background: #fff; padding: 10px; margin-bottom: 5px; border-radius: 5px; border-left: 4px solid #fca311; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <strong>${msg.name}</strong> <span style="font-size: 0.8em; color: gray;">(${msg.email})</span> said:<br>
+                    <span style="color: #333; display: block; margin-top: 5px;">${msg.message}</span> 
+                    <small style="color: #aaa; display: block; margin-top: 5px;">Sent: ${msg.timestamp}</small>
                 </li>
             `).join('');
         } else {
@@ -41,76 +47,100 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    loadMessages(); // Run on page load
+    // Run on page load
+    loadMessages();
 
     // Handle Form Submit
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            console.log('Form submitted!'); // Debug log
 
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const message = document.getElementById('message').value;
+            const nameInput = document.getElementById('name') || form.querySelector('input[type="text"]');
+            const emailInput = document.getElementById('email') || form.querySelector('input[type="email"]');
+            const messageInput = document.getElementById('message') || form.querySelector('textarea');
+            const sendBtn = form.querySelector('button');
 
-        // Simulate API Saving...
-        const sendBtn = form.querySelector('button');
-        const originalText = sendBtn.innerText;
-        sendBtn.innerText = "Sending to Server...";
-        sendBtn.disabled = true;
+            const name = nameInput.value;
+            const email = emailInput.value;
+            const message = messageInput.value;
 
-        setTimeout(() => {
-            // Save to "Database"
-            const newMessage = {
-                name,
-                email,
-                message,
-                timestamp: new Date().toLocaleString()
-            };
+            // UI Feedback: Button changes state
+            const originalText = sendBtn ? sendBtn.innerText : "Send";
+            if (sendBtn) {
+                sendBtn.innerText = "Processing...";
+                sendBtn.style.opacity = "0.7";
+                sendBtn.disabled = true;
+            }
 
-            const existing = JSON.parse(localStorage.getItem('portfolioMessages')) || [];
-            existing.unshift(newMessage); // Add to top
-            localStorage.setItem('portfolioMessages', JSON.stringify(existing));
+            // Simulate API Network Delay (1 second)
+            setTimeout(() => {
+                // 1. Create Data Object
+                const newMessage = {
+                    name: name,
+                    email: email,
+                    message: message,
+                    timestamp: new Date().toLocaleString()
+                };
 
-            // UI Feedback
-            alert(`Thanks ${name}! Your message has been saved to the database.`);
-            form.reset();
-            sendBtn.innerText = originalText;
-            sendBtn.disabled = false;
+                // 2. Save to "Database" (LocalStorage)
+                const stored = localStorage.getItem('portfolioMessages');
+                const existing = stored ? JSON.parse(stored) : [];
+                existing.unshift(newMessage); // Add new item to TOP of list
+                localStorage.setItem('portfolioMessages', JSON.stringify(existing));
 
-            // Update Backend View
-            loadMessages();
+                console.log('Saved to DB:', newMessage);
 
-            // Scroll to backend view to show proof
-            backendDemo.scrollIntoView({ behavior: 'smooth' });
+                // 3. Update UI
+                alert(`Success! Message saved to backend database.\n\nFrom: ${name}\nTo: Admin Dashboard`);
+                form.reset();
 
-        }, 1500); // 1.5s delay to simulate network
-    });
+                if (sendBtn) {
+                    sendBtn.innerText = originalText;
+                    sendBtn.style.opacity = "1";
+                    sendBtn.disabled = false;
+                }
+
+                // 4. Refresh Backend View
+                loadMessages();
+
+                // 5. Scroll to show proof
+                backendDemo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            }, 1000);
+        });
+    } else {
+        console.error('Form not found!');
+    }
 
     // Clear Database Button
-    clearBtn.addEventListener('click', () => {
-        if (confirm('Are you sure you want to clear the database?')) {
-            localStorage.removeItem('portfolioMessages');
-            loadMessages();
-            alert('Database cleared!');
-        }
-    });
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to delete all records from the database?')) {
+                localStorage.removeItem('portfolioMessages');
+                loadMessages();
+                alert('Database cleared successfully.');
+            }
+        });
+    }
 
-    // --- Scroll Animations ---
+    // --- Simple Scroll Animations ---
     const reveal = () => {
         const reveals = document.querySelectorAll('.skill-card, .project-card');
         for (let i = 0; i < reveals.length; i++) {
             const windowHeight = window.innerHeight;
             const elementTop = reveals[i].getBoundingClientRect().top;
-            const elementVisible = 150;
+            const elementVisible = 50; // trigger earlier
 
             if (elementTop < windowHeight - elementVisible) {
-                reveals[i].classList.add('active'); // Needs CSS keyframe if specific animation desired
+                reveals[i].classList.add('active');
                 reveals[i].style.opacity = "1";
                 reveals[i].style.transform = "translateY(0)";
             }
         }
     };
 
-    // Initial style for animation
+    // Inject animation styles dynamically
     const styleSheet = document.createElement("style");
     styleSheet.innerText = `
         .skill-card, .project-card {
@@ -122,5 +152,5 @@ document.addEventListener('DOMContentLoaded', () => {
     document.head.appendChild(styleSheet);
 
     window.addEventListener('scroll', reveal);
-    reveal(); // Trigger once on load
+    reveal(); // Trigger once on load to show initial items
 });
