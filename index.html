@@ -96,23 +96,36 @@
     <!-- Contact Section -->
     <section id="contact" class="container">
         <h2>Get In Touch</h2>
-        <form id="contact-form">
-            <input type="text" id="name" placeholder="Your Name" required>
-            <input type="email" id="email" placeholder="Your Email" required>
-            <textarea id="message" placeholder="Message" rows="5" required></textarea>
-            <button type="submit" class="btn">Send Message</button>
-        </form>
+        <!-- Contact Section -->
+        <section id="contact" class="container">
+            <h2>Get In Touch</h2>
+            <!-- Real Backend using FormSubmit.co -->
+            <form action="https://formsubmit.co/24f2002015@ds.study.iitm.ac.in" method="POST"
+                style="max-width: 600px; margin: 0 auto; display: flex; flex-direction: column; gap: 15px;">
+                <!-- Anti-spam honeypot (hidden) -->
+                <input type="text" name="_honey" style="display:none">
+                <!-- Disable Captcha for smoother experience -->
+                <input type="hidden" name="_captcha" value="false">
+                <!-- Redirect back to the page after submission -->
+                <input type="hidden" name="_next" value="https://sololeveling-01.github.io/web-developer-portfolio/">
 
-        <!-- Backend Demo Section -->
-        <div id="backend-demo"
-            style="margin-top: 50px; text-align: left; background: #eef; padding: 20px; border-radius: 10px; display: none;">
-            <h3>🔌 Backend Database Simulation</h3>
-            <p><em>This section demonstrates how a backend stores form submissions. Messages appear here instantly.</em>
-            </p>
-            <ul id="messages-list" style="list-style: none; padding: 0;">
-                <!-- Messages will be injected here by JS -->
-            </ul>
-            <button id="clear-db" class="btn-sm" style="background: red; margin-top: 10px;">Clear Database</button>
+                <input type="text" name="name" placeholder="Your Name" required
+                    style="padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
+                <input type="email" name="email" placeholder="Your Email" required
+                    style="padding: 12px; border: 1px solid #ddd; border-radius: 5px;">
+                <textarea name="message" placeholder="Write your message here..." rows="5" required
+                    style="padding: 12px; border: 1px solid #ddd; border-radius: 5px; font-family: sans-serif;"></textarea>
+
+                <button type="submit" class="btn"
+                    style="background: #28a745; color: white; border: none; padding: 12px; font-size: 1.1rem; cursor: pointer; border-radius: 5px;">
+                    <i class="fas fa-paper-plane"></i> Send Message (Working Backend)
+                </button>
+            </form>
+        </section>
+        <ul id="messages-list" style="list-style: none; padding: 0;">
+            <!-- Messages will be injected here by JS -->
+        </ul>
+        <button id="clear-db" class="btn-sm" style="background: red; margin-top: 10px;">Clear Database</button>
         </div>
     </section>
 
